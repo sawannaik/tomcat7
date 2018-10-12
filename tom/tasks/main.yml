@@ -1,24 +1,51 @@
----
+#---
 # tasks file for tom
-- name: install tomcat
-  yum: 
+#- name: install tomcat
+  #yum: 
+    #name: tomcat
+    #state: present
+
+#- name: Tomcat configuration
+  #templates:
+   #src: templates/tomacatconfiguration.j2
+   #dest: /usr/share/tomcat/conf/tomcat.conf
+  #notify: tomstart
+#- name: Tomcat Installation
+  #yum:
+    #name: "{{ items }}"
+    #state: present
+  #with_items:
+      #- tomcat-webapps
+      #- tomcat-admin-webapps
+#- name: Tomcat User configuration
+  #templates:
+   #src: templates/tomcatuser.j2
+   #dest: /usr/share/tomcat/conf/tomcat-users.xml
+  #notify: tomrestart
+
+
+---
+# tasks file for mytom7installrole
+- name: install tomcat7 on redhat
+  yum:
     name: tomcat
     state: present
 
-- name: Tomcat configuration
-  templates:
-   src: templates/tomacatconfiguration.j2
-   dest: /usr/share/tomcat/conf/tomcat.conf
+- name: copy the tomcat config file into all nodes
+  template:
+    src:  templates/tomacatconfiguration.j2
+    dest: /usr/share/tomcat/conf/tomcat.conf
   notify: tomstart
-- name: Tomcat Installation
+- name: Install tomcat Admin Packages
   yum:
-    name: "{{ items }}"
+    name: "{{ item }}"
     state: present
   with_items:
-      - tomcat-webapps
-      - tomcat-admin-webapps
-- name: Tomcat User configuration
-  templates:
-   src: templates/tomcatuser.j2
-   dest: /usr/share/tomcat/conf/tomcat-users.xml
+    - tomcat-webapps
+    - tomcat-admin-webapps 
+- name: copy the tomcat user.xml file into all nodes
+  template:
+    src: templates/tomcatuser.j2
+    dest: /usr/share/tomcat/conf/tomcat-users.xml
   notify: tomrestart
+
